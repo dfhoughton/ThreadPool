@@ -1,0 +1,8 @@
+ThreadPool
+==========
+
+David F. Houghton
+19 Feb, 2010
+
+This will be a very small, simple library providing concurrency with minimal
+effort.
