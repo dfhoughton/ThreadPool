@@ -6,3 +6,8 @@ David F. Houghton
 
 This will be a very small, simple library providing concurrency with minimal
 effort.
+
+TODO
+
+Create build.xml file to create javadocs, compile code, run the tests, and pack
+this wee bit of code into a jar.
