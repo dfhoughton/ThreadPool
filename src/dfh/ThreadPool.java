@@ -59,6 +59,7 @@ public class ThreadPool {
 
 	private static int poolSize = -1;
 	private static final Queue<PoolThread> pool = new LinkedList<PoolThread>();
+	private static boolean singleThreaded = false;
 
 	/**
 	 * The default number of threads will be the number of available processors.
@@ -84,6 +85,10 @@ public class ThreadPool {
 	}
 
 	/**
+	 * Returns maximum number of concurrent threads in this pool. This will be
+	 * -1 until the pool is initialized or {@link #setSingleThreaded(boolean)}
+	 * is called; 0 after {@link #setSingleThreaded(boolean)} is called.
+	 * 
 	 * @return maximum number of concurrent threads in this pool
 	 */
 	public static int getPoolSize() {
@@ -100,22 +105,26 @@ public class ThreadPool {
 	 *            work to do
 	 */
 	public static void enqueue(Runnable r) {
-		PoolThread t = null;
-		synchronized (pool) {
-			if (poolSize == -1) {
-				poolSize = Runtime.getRuntime().availableProcessors();
-				init();
-			}
-			while (pool.isEmpty()) {
-				try {
-					pool.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+		if (singleThreaded)
+			r.run();
+		else {
+			PoolThread t = null;
+			synchronized (pool) {
+				if (poolSize == -1) {
+					poolSize = Runtime.getRuntime().availableProcessors();
+					init();
 				}
+				while (pool.isEmpty()) {
+					try {
+						pool.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				t = pool.remove();
 			}
-			t = pool.remove();
+			t.setR(r);
 		}
-		t.setR(r);
 	}
 
 	/**
@@ -139,5 +148,32 @@ public class ThreadPool {
 	private static void init() {
 		for (int i = 0; i < poolSize; i++)
 			pool.add(new PoolThread());
+	}
+
+	/**
+	 * Set <code>ThreadPool</code> to use a single thread. This is useful for
+	 * debugging. An exception will be thrown if you attempt to set this
+	 * property after the pool has been initialized.
+	 * 
+	 * @param singleThreaded
+	 * @throws ThreadPoolException
+	 */
+	public static void setSingleThreaded(boolean singleThreaded)
+			throws ThreadPoolException {
+		synchronized (pool) {
+			if (poolSize > -1)
+				throw new ThreadPoolException(
+						"setting single threaded after thread pool initialized");
+			ThreadPool.singleThreaded = singleThreaded;
+			poolSize = 0;
+		}
+	}
+
+	/**
+	 * @return whether <code>ThreadPool</code> is running in single-threaded
+	 *         debugging mode
+	 */
+	public static boolean isSingleThreaded() {
+		return singleThreaded;
 	}
 }
