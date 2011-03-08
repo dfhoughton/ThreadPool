@@ -11,3 +11,8 @@ TODO
 
 Create build.xml file to create javadocs, compile code, run the tests, and pack
 this wee bit of code into a jar.
+
+Other Stuff
+-----------
+This software is distributed under the terms of the FSF Lesser Gnu 
+Public License (see lgpl.txt).
