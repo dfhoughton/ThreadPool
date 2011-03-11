@@ -1,4 +1,4 @@
-package dfh;
+package dfh.thread.pool;
 
 import org.junit.After;
 import org.junit.AfterClass;

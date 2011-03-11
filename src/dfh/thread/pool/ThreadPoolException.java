@@ -1,4 +1,4 @@
-package dfh;
+package dfh.thread.pool;
 
 /**
  * Just your standard {@link Exception} class to tag exceptions thrown from this package.
