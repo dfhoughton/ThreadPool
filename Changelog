@@ -1,4 +1,7 @@
 Thread Pool changelog
 
+1.001
+  * included license etc. into jar in build.xml
+
 1.0  March 11, 2011
   * added some code to kill daemon threads when class is unloaded
