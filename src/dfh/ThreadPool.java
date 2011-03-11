@@ -1,6 +1,7 @@
 package dfh;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -18,7 +19,23 @@ import java.util.Queue;
  * 
  */
 public class ThreadPool {
+	/**
+	 * An object to ensure this class's threads will not outlive the class
+	 * itself.
+	 */
+	@SuppressWarnings("serial")
+	static final List<PoolThread> unloader = new LinkedList<PoolThread>() {
+		@Override
+		public void finalize() {
+			for (PoolThread t : this)
+				t.apoptosis();
+			clear();
+		}
+	};
+
 	private static class PoolThread extends Thread {
+		private boolean done = false;
+
 		/**
 		 * Start thread immediately upon construction.
 		 */
@@ -26,6 +43,15 @@ public class ThreadPool {
 			super();
 			setDaemon(true);
 			start();
+			unloader.add(this);
+		}
+
+		/**
+		 * Causes thread to start shutting down.
+		 */
+		synchronized void apoptosis() {
+			done = true;
+			interrupt();
 		}
 
 		private Runnable r;
@@ -34,14 +60,17 @@ public class ThreadPool {
 		public void run() {
 			while (true) {
 				synchronized (this) {
-					while (r == null) {
+					while (!done && r == null) {
 						try {
 							wait();
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							if (!done)
+								e.printStackTrace();
 						}
 					}
 				}
+				if (done)
+					break;
 				r.run();
 				r = null;
 				synchronized (pool) {
