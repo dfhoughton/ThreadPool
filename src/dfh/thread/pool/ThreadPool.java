@@ -23,15 +23,19 @@ public class ThreadPool {
 	 * An object to ensure this class's threads will not outlive the class
 	 * itself.
 	 */
-	@SuppressWarnings("serial")
-	static final List<PoolThread> unloader = new LinkedList<PoolThread>() {
-		@Override
-		public void finalize() {
-			for (PoolThread t : this)
-				t.apoptosis();
-			clear();
-		}
-	};
+	static final List<PoolThread> unloader = new LinkedList<PoolThread>();
+
+	/**
+	 * This method must be called at the appropriate moment in your
+	 * application's life cycle if the application may be stopped while the VM
+	 * keeps going. For example, if you use {@link ThreadPool} in a web
+	 * application, if the application is undeployed your servlet must call this
+	 * method when it's destroy method is called.
+	 */
+	public static void destroy() {
+		for (PoolThread t : unloader)
+			t.apoptosis();
+	}
 
 	private static class PoolThread extends Thread {
 		private boolean done = false;

@@ -1,5 +1,8 @@
 Thread Pool changelog
 
+1.002 March 25, 2010
+  * added code to deal with thread leak issue in web app container
+
 1.001
   * included license etc. into jar in build.xml
 
