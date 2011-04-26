@@ -107,7 +107,7 @@ public class ThreadPool {
 	 */
 	public static void setPoolSize(int poolSize) throws ThreadPoolException {
 		synchronized (pool) {
-			if (poolSize == -1) {
+			if (ThreadPool.poolSize == -1) {
 				if (poolSize < 1)
 					throw new ThreadPoolException("pool size must be positive");
 				ThreadPool.poolSize = poolSize;
