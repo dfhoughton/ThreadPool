@@ -1,6 +1,6 @@
 Thread Pool changelog
 
-1.002 March 25, 2010
+1.002 March 25, 2011
   * added code to deal with thread leak issue in web app container
 
 1.001
