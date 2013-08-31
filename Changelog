@@ -1,5 +1,9 @@
 Thread Pool changelog
 
+1.003 August 31, 2013
+  * fixed thread leak when throwables thrown (thanks, didxga!)
+  * deprecated in favor of ThreadPuddle
+
 1.002 March 25, 2011
   * added code to deal with thread leak issue in web app container
 

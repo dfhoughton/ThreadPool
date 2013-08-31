@@ -1,5 +1,7 @@
 package dfh.thread.pool;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +42,27 @@ public class ThreadPoolTest {
 			}
 			ThreadPool.flush();
 			org.junit.Assert.assertTrue("finished simple task", true);
+		} catch (Exception e) {
+			org.junit.Assert.fail("error thrown: " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void exceptions() {
+		final AtomicInteger ai = new AtomicInteger();
+		try {
+			for (int i = 0; i < 100; i++) {
+				Runnable r = new Runnable() {
+					@Override
+					public void run() {
+						ai.incrementAndGet();
+						throw new RuntimeException("oopsie!");
+					}
+				};
+				ThreadPool.enqueue(r);
+			}
+			ThreadPool.flush();
+			org.junit.Assert.assertEquals("incremented every time", 100L, ai.longValue());
 		} catch (Exception e) {
 			org.junit.Assert.fail("error thrown: " + e.getMessage());
 		}

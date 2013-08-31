@@ -75,7 +75,11 @@ public class ThreadPool {
 				}
 				if (done)
 					break;
-				r.run();
+				try {
+					r.run();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 				r = null;
 				synchronized (pool) {
 					pool.add(this);

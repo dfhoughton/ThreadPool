@@ -7,6 +7,10 @@ David F. Houghton
 This will be a very small, simple library providing concurrency with minimal
 effort.
 
+** ThreadPool is now DEPRECATED!!! **
+
+Use ThreadPuddle instead. It's faster and does essentially the same thing.
+
 TODO
 
 Create build.xml file to create javadocs, compile code, run the tests, and pack
